@@ -15,7 +15,13 @@ lot. Every engine call you write has to be checked against the installed game.
 4. **Installed Workshop mods** - `<steam>/steamapps/workshop/content/108600/<id>/mods/`. Good for
    "does any B42 mod do X this way" (e.g. how many ship a root `mod.info`, what sandbox syntax works).
    Never copy their code; credit if you borrow an idea that is distinctive.
-5. Wikis, forum posts, AI memory: leads only. Verify before use.
+5. The generated API docs (JavaDocs, LuaDocs, PZ API docs) and the PZ wiki (check its version banner).
+   Good for finding things; confirm against 1-2 before relying on them.
+6. Forum posts, YouTube, AI memory: leads only. Verify before use. The PZ wiki says outright that LLMs
+   hallucinate PZ API functions; treat your own recall the same way.
+
+Editor support catches most invented calls before the game does: VS Code + **Umbrella** (PZ Lua API
+type stubs) + **ZedScripts** (script files). See [community-patterns.md](community-patterns.md#tooling-the-community-uses).
 
 `<game>` is usually `C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid` (or another
 Steam library). Ask the user if it is not there.

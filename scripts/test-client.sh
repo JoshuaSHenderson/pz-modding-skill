@@ -4,6 +4,7 @@
 #   bash test-client.sh 2     # second player, any other username and password
 # Each client has its own throwaway home (.testclientN) with a copy of the server's mods; never the real ~/Zomboid.
 # Join: IP 127.0.0.1, port 16261. Restart the server after any Lua change so files match.
+# RIG_DEBUG=1 adds -debug (F11 Lua debugger, Reset Lua on the main menu).
 # Java-mod loaders (e.g. ZombieBuddy) need their agent flag: AGENT="-agentlib:zbNative".
 set -e
 case "$1" in [1-9]) N="$1" ;; *) echo "usage: $0 N   (N = 1..9)" >&2; exit 1 ;; esac
@@ -24,4 +25,4 @@ exec ./jre64/bin/java.exe $AGENT --enable-native-access=ALL-UNNAMED \
   "-Duser.home=$W_HOME" "-Ddeployment.user.cachedir=$W_HOME\\Zomboid" \
   "-Djava.library.path=win64/;." \
   -cp ".;projectzomboid.jar" zombie.gameStates.MainScreenState \
-  -nosteam "-cachedir=$W_HOME\\Zomboid" </dev/null
+  -nosteam ${RIG_DEBUG:+-debug} "-cachedir=$W_HOME\\Zomboid" </dev/null

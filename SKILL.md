@@ -18,7 +18,7 @@ Follow it in order. Each phase has a reference file; read it when you reach that
 |---|---|---|---|
 | 1 | Scope: what the mod does, which side (client / server / shared), SP and/or MP | this file | One-paragraph spec the user agrees with |
 | 2 | Scaffold the Workshop-shaped repo | [references/layout-and-metadata.md](references/layout-and-metadata.md) | `python scripts/check_mod.py <ItemFolder>` passes |
-| 3 | Find how vanilla does it, then write the code | [references/verify-against-game.md](references/verify-against-game.md), [references/b42-api-gotchas.md](references/b42-api-gotchas.md) | Every engine call verified (name **and** signature) |
+| 3 | Find how vanilla and working mods do it, then write the code | [references/verify-against-game.md](references/verify-against-game.md), [references/community-patterns.md](references/community-patterns.md), [references/b42-api-gotchas.md](references/b42-api-gotchas.md) | Every engine call verified (name **and** signature) |
 | 4 | Test: specs, local rig, in-game checklist | [references/testing.md](references/testing.md) | Specs pass, mod boots clean on the rig, checklist done or listed as untested |
 | 5 | Art: preview, icons, screenshots | [references/images.md](references/images.md) | `preview.png` 256x256 < 1 MB, icons at engine sizes |
 | 6 | Words: Workshop description, README, changelog | [references/workshop-description.md](references/workshop-description.md) | Under 8000 chars, no AI tells, claims match tests |
@@ -32,14 +32,17 @@ of mistakes that actually shipped (or nearly shipped) in real mods, with the fix
 1. **Verify, never assume, the engine API.** Grep vanilla Lua under `<game>/media/lua/` and decompile
    `projectzomboid.jar` for Java classes. A call that "looks right" is the single biggest source of
    AI-written PZ bugs. Record how you checked in a comment when it is not obvious.
+   The [PZ wiki modding pages](https://pzwiki.net/wiki/Modding) are the community's reference (check each
+   page's version banner); Umbrella type stubs in VS Code flag invented calls as you type.
 2. **`pcall` does not make a Java call safe.** A missing Java method throws through the Lua bridge
    and `pcall` does not catch it. Don't wrap calls to look defensive; verify them.
 3. **Kahlua is not Lua 5.1.** No `next()`, no `goto`, limited stdlib, Java objects not tables. See
    the gotchas file.
 4. **Build 42 formats only.** Translations are `Translate/EN/*.json`; traits are script objects plus
    `media/registries.lua`. B41 tutorials and forum posts are usually wrong for B42.
-5. **Both `mod.info` files.** One at the mod root and one in `42/`. Without the root one the mod never
-   appears in the list, with no error anywhere.
+5. **B42 layout.** `common/` plus a version folder (`42/`) holding `mod.info`, `poster.png` and the code,
+   and a root `mod.info` copy. A mod shipped as only `42/mod.info` never appeared in the list, with no
+   error anywhere.
 6. **Test in an isolated home.** Never test with `ProjectZomboidServer.bat` or against the user's real
    `~/Zomboid`: use `scripts/test-server.sh` (it points `user.home` at a throwaway folder).
 7. **Say what was not tested.** If a path was never run in game, the README and your reply say so,
@@ -50,6 +53,10 @@ of mistakes that actually shipped (or nearly shipped) in real mods, with the fix
    passwords, emails, or raw logs (logs contain all of those). Test rig folders are gitignored.
 10. **Credits and licences are checked before publishing.** Third-party models, sounds and images need
     a licence that allows redistribution, recorded in the README/Workshop text. Unverified = do not ship.
+11. **Decorate, don't overwrite.** Wrap vanilla functions (call the original, return its result) and
+    soft-override script blocks; never ship a copy of a vanilla file to change one thing. Every file sits
+    under a folder named after the mod.
+12. **Gameplay settings are sandbox options.** ModOptions are per-PC UI preferences only.
 
 ## Quick start (new mod)
 

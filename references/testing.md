@@ -72,6 +72,11 @@ until grep -q "SERVER STARTED" .testserver.out; do sleep 5; done
 grep -n "\[MyMod\]\|ERROR\|Exception" .testserver.out | head -50
 ```
 
+Debug mode: `RIG_DEBUG=1 bash scripts/test-client.sh 1` adds `-debug` to a client (the dedicated server
+logs `unknown option "-debug"` and ignores it, so the server script does not pass it). On the client that gives the F11 Lua
+debugger, debug context menus (spawn items, teleport) and **Reset Lua** on the main menu, which reloads
+client and shared Lua without restarting the game. Server-side Lua still needs a server restart.
+
 **Never use `ProjectZomboidServer.bat` for testing.** It ignores arguments and starts the default
 `servertest` on the real `~/Zomboid`.
 
@@ -113,6 +118,7 @@ enters the repo's mod folder or the Workshop upload.
 Write it for the user as numbered steps with the expected result after each. Cover, as they apply:
 
 - [ ] Mod appears in the mod list with its poster; enabling it gives no error popup.
+- [ ] Played with `-debug`: no red error counter appears in the corner while using the feature.
 - [ ] `console.txt` has no `[MyMod]` errors and no stack trace mentioning the mod's files.
 - [ ] Every sandbox option label and tooltip shows real text (not raw keys); every value changes behaviour.
 - [ ] Every ModOptions entry (Options > Mods) saves and applies.

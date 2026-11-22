@@ -25,8 +25,9 @@ def files(mod_id, name, author):
     m = f"{mod_id}/Contents/mods/{mod_id}"
     lua = f"{m}/42/media/lua"
     return {
-        f"{m}/mod.info": info,
+        f"{m}/mod.info": info,                      # insurance copy, see references/layout-and-metadata.md
         f"{m}/42/mod.info": info,
+        f"{m}/common/.gitkeep": "",                 # B42 needs common/; put big assets (models, textures) here
         f"{mod_id}/workshop.txt": (
             f"version=1\nid=\ntitle={name}\ndescription=[h1]{name}[/h1]\n"
             "description=TODO: the problem, then what the mod does about it.\ndescription=\n"

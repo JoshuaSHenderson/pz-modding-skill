@@ -82,6 +82,7 @@ Humour and personality are fine when they are specific to the mod ("Sprinters do
 - Every third-party asset is credited with author, source link and licence. Unofficial add-ons for
   another mod say so and credit that mod's team, especially when the preview uses their logo
   (mark it `[UNOFFICIAL]`).
+- State the licence (LICENSE file in the repo, or one of TIS's BBCode licence templates on the page).
 - No private information: no server IPs, usernames, Discord invites the user did not ask for, local paths.
 - Follow the user's preference on AI attribution. Do not add "made with AI" lines or tool footers they
   did not ask for; do not hide it if they want it stated.

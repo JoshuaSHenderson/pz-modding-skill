@@ -7,7 +7,9 @@ descriptions that do not read like AI wrote them, preview images and screenshots
 checklist.
 
 It is distilled from building and shipping five B42 mods (a trait, a client UI add-on, a driving aid, a
-sound mod and a large multiplayer admin system) and from every bug that slipped through along the way.
+sound mod and a large multiplayer admin system) and every bug that slipped through along the way, a
+survey of the 273 mods installed on the author's PC, and the
+[PZ wiki's modding pages](https://pzwiki.net/wiki/Modding).
 The [AI pitfalls checklist](references/ai-pitfalls.md) is the short version.
 
 ## Contents
@@ -17,6 +19,7 @@ The [AI pitfalls checklist](references/ai-pitfalls.md) is the short version.
 | [SKILL.md](SKILL.md) | The workflow and non-negotiables. Entry point. |
 | [references/layout-and-metadata.md](references/layout-and-metadata.md) | Folder layout, `mod.info`, `workshop.txt`, sandbox options, ModOptions |
 | [references/verify-against-game.md](references/verify-against-game.md) | Checking APIs against the jar (CFR on the game's own Java) and vanilla Lua |
+| [references/community-patterns.md](references/community-patterns.md) | Idioms from a survey of 273 installed B42 mods and the PZ wiki: hooking, timed actions, loot, ModData sync, scripts, translations, tooling, legal |
 | [references/b42-api-gotchas.md](references/b42-api-gotchas.md) | Kahlua quirks, B41 vs B42, MP commands, persistence, sound, Java mods, logs |
 | [references/testing.md](references/testing.md) | Plain-Lua specs, isolated local server and clients, in-engine self-test, in-game checklist |
 | [references/images.md](references/images.md) | Preview, poster, icons, screenshots |
@@ -24,7 +27,7 @@ The [AI pitfalls checklist](references/ai-pitfalls.md) is the short version.
 | [references/release.md](references/release.md) | Versioning, upload, servers |
 | [references/ai-pitfalls.md](references/ai-pitfalls.md) | The checklist to run before calling a mod done |
 | [scripts/scaffold.py](scripts/scaffold.py) | New mod repo in the Workshop layout |
-| [scripts/check_mod.py](scripts/check_mod.py) | Lint for silent packaging failures (missing root `mod.info`, B41 translations, `next()`, preview size, 8000-char description, duplicate ids, private data) |
+| [scripts/check_mod.py](scripts/check_mod.py) | Lint for silent packaging failures (B42 layout, B41 translations and scripts, `next()`, `pcall`, loose Lua files, preview size, 8000-char description, duplicate ids, private data) |
 | [scripts/test-server.sh](scripts/test-server.sh), [scripts/test-client.sh](scripts/test-client.sh) | Isolated dedicated server and clients (Windows, Git Bash) |
 | [scripts/make_preview.py](scripts/make_preview.py) | 256x256 Workshop preview from text or a screenshot (Pillow) |
 

@@ -2,8 +2,9 @@
 
 | Asset | Where | Size | Notes |
 |---|---|---|---|
-| Workshop preview | `<Item>/preview.png` | **256x256**, < 1 MB (Steam limit) | The card players see in search. Square. Scale it yourself (LANCZOS) so pixel art stays crisp. |
-| In-game poster | `Contents/mods/<Mod>/poster.png` and `42/poster.png`, `poster=poster.png` in both mod.info | 256x256 is fine | Shown in the mod list. Usually the same art. |
+| Workshop preview | `<Item>/preview.png` | square, **max 512x512**, 8-bit colour, < 1 MB | The card players see in search. 256x256 is plenty; 512x512 is the in-game uploader's maximum (PZ wiki). Scale it yourself (LANCZOS) so pixel art stays crisp. Non-square or animated previews need an external tool (SteamChangePreview). |
+| In-game poster | `42/poster.png` (and root, beside each `mod.info`), `poster=poster.png` | 256x256 is fine | Shown in the mod list. Usually the same art. |
+| Mod list icon | `42/icon.png`, `icon=icon.png` | small square (32-64 px) | Optional; 109 of 273 installed mods ship one. |
 | Trait icon | `42/media/ui/Traits/trait_<name>.png` | 18x18 | Match vanilla trait icons: simple silhouette, readable at 18 px. |
 | UI icons / marks | `42/media/ui/<Mod>/...png` | the size you draw at (16-32 px typical) | Transparent PNG. Generate from a script so they can be rebuilt. |
 | Screenshots | `docs/screenshots/<what-it-shows>.png` | full resolution, PNG | Linked from README and workshop.txt via raw GitHub URLs. |
@@ -34,8 +35,11 @@ Technique notes:
 
 ## Generated art (AI images)
 
-If the user wants generated art, they make it (or approve it) and the licence question is theirs; note
-it in the README. Check it for the usual generator defects at 256 px: garbled text (put text on with
+The PZ wiki warns that Workshop users skip mods with AI-generated previews: low-effort mods made the
+look a signal of low quality, and AI previews rarely match the game's style or show what the mod does.
+Default to **an in-game screenshot of the mod working, with the mod name on it** (`make_preview.py
+--shot`). If the user still wants generated art, they make it (or approve it) and the licence question
+is theirs; note it in the README. Check it for the usual generator defects at 256 px: garbled text (put text on with
 Pillow instead), extra fingers, melted UI. Never pass off a generated image as an in-game screenshot.
 
 ## Screenshots that sell the mod

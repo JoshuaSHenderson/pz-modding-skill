@@ -13,12 +13,30 @@ Each item here cost a real mod a release, a crash report or a day of debugging.
 | Java numbers and strings come back as Lua values, but Java `null` is `nil` and an empty Java string is not `nil`. | Check both where it matters. |
 | Integer division, `string.format("%d", 1.5)` and some `os`/`io` functions behave differently or are missing. | Use `math.floor`, test in game, prefer `getFileWriter` / `getFileReader` for files. |
 | Globals are shared across **all** mods. | `local` everything; one global table per mod (`MyMod = MyMod or {}`). |
+| `if obj.someMethod then obj:someMethod() end` to "make sure it exists". | Never. A Java instance always has its methods; this guard only hides that the method was invented, and the code silently does nothing (the PZ wiki's own example of AI-written PZ code). Verify the method instead. |
+| Reading Java **instance fields** by reflection (`getClassField`, `getClassFieldVal`). | Restricted to debug mode since 42.15 (wiki, Lua (API)). Use getters. Public **static** fields still work: `IsoPlayer.DEATH_MUSIC_NAME`. |
+| Removing an entry from an array with `t[i] = nil`. | Breaks `#` and `ipairs`. Use `table.remove(t, i)`. |
+
+## Lua load order
+
+| Folder | SP | MP client | MP server |
+|---|---|---|---|
+| `shared/` | yes | yes | yes |
+| `client/` | yes | yes | no |
+| `server/` | yes | **no** | yes |
+
+At game start (and on Reset Lua): vanilla shared, mod shared, vanilla client, mod client. `server/` is
+loaded only when a save loads (vanilla then mods) and unloaded on return to the menu. So `server/` code
+cannot be required from `client/` on an MP client, and anything both sides need goes in `shared/`.
+A file at the same path as a vanilla or other-mod file replaces it; keep everything under `MyMod/`.
 
 ## Build 42 vs Build 41
 
 | B41 (do not use) | B42 |
 |---|---|
-| `Translate/EN/UI_EN.txt` Lua-table files | `Translate/EN/UI.json`, `Sandbox.json`, ... The engine only reads `media/lua/shared/Translate/<LANG>/<Name>.json`. A `.txt` file sits there ignored and every label shows its raw key. |
+| `Translate/EN/UI_EN.txt` Lua-table files | `Translate/EN/UI.json`, `Sandbox.json`, ... (since 42.15, no language code in the name: not `UI_EN.json`). The engine only reads `media/lua/shared/Translate/<LANG>/<Name>.json`. A `.txt` file sits there ignored and every label shows its raw key. File types and prefixes: [community-patterns.md](community-patterns.md#translations). |
+| `Type = Normal` in item scripts, `recipe` blocks | `ItemType = base:normal`, `craftRecipe` blocks. Change vanilla items by soft override, not by copying vanilla script files. |
+| Timed actions in `client/`, world change in `perform()`, local class | `shared/TimedActions/`, world change in `complete()`, class global by prefixed `Type` (42.13+). See [community-patterns.md](community-patterns.md#timed-actions-b42). |
 | `TraitFactory.addTrait(...)` | Trait is a script object `character_trait_definition mymod:mytrait` in `media/scripts/`, **plus** `media/registries.lua` calling `CharacterTrait.register("mymod:mytrait")`. Without the registration the script is dropped at load with `NullPointerException ... "this.characterTraitType" is null` and the mod silently does nothing. |
 | `player:HasTrait("Name")` (string) | `player:hasTrait(CharacterTrait)` with the registered object; store it from `registries.lua` (`MyMod.TRAIT = CharacterTrait.register(...)`). |
 | `setRunSpeedModifier`, `setInfectionLevel` | Removed. Movement buffs via trait `XPBoosts = Fitness=2;Sprinting=3`; infection via `getBodyDamage():setInfected(true)`. |
@@ -43,12 +61,17 @@ Translation text style: vanilla trait descriptions are two or three clipped mech
 - Every player needs the same mod files as the server; a mismatch blocks joining. Restart the server
   after any Lua change before testing with clients.
 
+- Up to four split-screen players share one client: use the `playerNum` / player an event passes and
+  `getSpecificPlayer(n)`, not `getPlayer()`, for anything per player.
+
 ## Persistence
 
 - `ModData.getOrCreate("MyMod")` (global) or `obj:getModData()` (per object) saves with the world.
   Store **plain values only**: numbers, strings, booleans, tables of those. Never Java objects
   (squares, zombies, players, items) or functions; store coordinates and ids and look them up again.
-- Global ModData is ready in `Events.OnInitGlobalModData`, not at file load.
+- Global ModData is ready in `Events.OnInitGlobalModData`, not at file load. In MP the server pushes it
+  with `ModData.transmit(key)` and clients receive it in `OnReceiveGlobalModData`; per-object changes
+  need `obj:transmitModData()`. Full pattern: [community-patterns.md](community-patterns.md#global-moddata-sync).
 - After a restart, Lua locals, closures, pending deferred jobs and zombie references are gone. Anything
   an ongoing system needs must be rebuildable from saved data. Test a restart mid-feature.
 - Removing a mod from a server's `Mods=` while its items are in the save deletes those items from every

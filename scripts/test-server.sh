@@ -12,13 +12,13 @@
 # DEPS     Workshop dependencies, copied fresh from steamapps/workshop/content/108600 every boot
 # SELFTEST a Lua file copied into the rig copy's lua/server/ only, for in-engine checks
 # RIG_HOME throwaway home (default: ./.testserver)    RIG_PASS admin password (default: rigtest)
-# RIG_MEM  server heap (default: 3072m)
+# RIG_MEM  server heap (default: 3072m). (-debug is client-only; the dedicated server rejects it.)
 # Windows + Git Bash. Ready when the output contains "SERVER STARTED".
 set -e
 : "${MOD:?set MOD to your mod id}"
 ITEM="${ITEM:-$MOD}"
 SRC="$ITEM/Contents/mods/$MOD"
-[ -f "$SRC/mod.info" ] || { echo "no $SRC/mod.info - run from the repo root" >&2; exit 1; }
+[ -d "$SRC" ] || { echo "no $SRC - run from the repo root" >&2; exit 1; }
 GAME="${PZ_GAME:-/c/Program Files (x86)/Steam/steamapps/common/ProjectZomboid}"
 [ -f "$GAME/projectzomboid.jar" ] || { echo "game not found at $GAME - set PZ_GAME" >&2; exit 1; }
 WS="${PZ_WORKSHOP:-$GAME/../../workshop/content/108600}"

@@ -33,13 +33,28 @@ rm -rf "$HOME/Zomboid/Workshop/MyMod" && cp -r MyMod "$HOME/Zomboid/Workshop/MyM
   `~/Zomboid/mods` in the user's own game when ids match.
 - Updating: same item, same id, bump version, upload again, add a change note in the uploader.
 
+## Updating a published mod
+
+- **Deleted files are not deleted on players' machines.** Steam leaves files from the old version in
+  place, which can cause mismatches or stale code running. Instead of deleting a Lua file, leave it in
+  the mod with its content emptied (a comment saying why), then remove it a few versions later.
+- Batch changes: every update forces servers using the mod to restart before players can join. Ship
+  larger tested updates; keep quick releases for critical fixes, and prefer weekdays over weekends.
+- Test before uploading (rig + checklist). A broken update that needs three hotfixes costs every server
+  three restarts.
+- Write a change note in the uploader; it appears on the Workshop change log.
+- The uploader replaces the whole Steam description with `workshop.txt`'s (see layout-and-metadata.md).
+
 ## Local install for play testing
 
 ```bash
 rm -rf "$HOME/Zomboid/mods/MyMod" && cp -r MyMod/Contents/mods/MyMod "$HOME/Zomboid/mods/"
 ```
 
-The game scans mods at startup; restart it after copying.
+The game scans mods at startup; restart it after copying. While developing, keep **one** visible copy of
+the mod: not subscribed to your own Workshop item, and not in both `~/Zomboid/mods` and
+`~/Zomboid/Workshop` (same id = they clash and changes silently do not show up). The PZ wiki recommends
+developing straight from `~/Zomboid/Workshop/<Item>` for that reason.
 
 ## Servers
 
